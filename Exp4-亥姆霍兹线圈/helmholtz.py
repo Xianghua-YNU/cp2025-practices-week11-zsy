@@ -12,7 +12,7 @@ def Helmholtz_coils(r_low, r_up, d):
     下方线圈半径 r_low，位于 z = -d/2。
     上方线圈半径 r_up，位于 z = +d/2。
 
-    输入:
+    输入: 
         r_low (float): 下方线圈的半径 (m)
         r_up (float): 上方线圈的半径 (m)
         d (float): 两线圈中心之间的距离 (m)
