@@ -60,22 +60,16 @@ def gauss_legendre_integral(length, z, n_points=100):
         3. 实现双重循环计算二重积分
     """
     # TODO: 实现高斯-勒让德积分
-    try:
-        x, wx = np.polynomial.legendre.leggauss(n_points)
-        y, wy = np.polynomial.legendre.leggauss(n_points)
+     try:
+        xi, wi = np.polynomial.legendre.leggauss(n_points)
         
-        def transform(t):
-            return (t + 1) * length / 2 - length / 2
-        
+        x = xi * (length / 2)
+        w = wi * (length / 2)
+    
         integral = 0.0
         for i in range(n_points):
-            xi = transform(x[i])
             for j in range(n_points):
-                yj = transform(y[j])
-                integral += wx[i] * wy[j] * integrand(xi, yj, z)
-    
-        scale = (length / 2) ** 2
-        integral *= scale
+                integral += w[i] * w[j] * integrand(x[i], x[j], z)
         
         return integral
     except Exception as e:
@@ -100,10 +94,11 @@ def calculate_force(length, mass, z, method='gauss'):
     # TODO: 返回最终引力值
     sigma = calculate_sigma(length, mass)
     
-    if method != 'gauss':
-        raise ValueError("method must be 'gauss'")
-        
-    integral = gauss_legendre_integral(length, z)
+    if method == 'gauss':
+        integral = gauss_legendre_integral(length, z)
+    else:
+
+        integral = 0.0
     
     if integral is None:
         integral = 0.0
