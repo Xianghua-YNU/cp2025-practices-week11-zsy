@@ -39,7 +39,7 @@ def Helmholtz_coils(r_low, r_up, d):
     # 2. 创建三维网格 Y, Z, Phi (用于后续计算)
     #    Y, Z, Phi = np.meshgrid(y_coords, z_coords, phi_angles)
     # 学生代码开始
-    Y, Z, Phi = np.meshgrid(y_coords, z_coords, phi_angles) # 占位符
+    Y, Z, Phi = np.meshgrid(y_coords, z_coords, phi_angles)  # 占位符
     # 学生代码结束
 
     # 3. 计算到下方线圈 (r_low, 中心在 z=-d/2) 上各电流元的距离 dist1
@@ -96,7 +96,7 @@ def Helmholtz_coils(r_low, r_up, d):
     print("磁场计算完成.")
     # 返回用于绘图的2D网格 (取一个phi切片) 和计算得到的磁场分量
     # return Y[:,:,0], Z[:,:,0], By, Bz
-    return Y[:, :, 0], Z[:, :, 0], By, Bz # 学生需要修改返回值
+    return Y, Z, By, Bz # 学生需要修改返回值
 
 
 def plot_magnetic_field_streamplot(r_coil_1, r_coil_2, d_coils):
