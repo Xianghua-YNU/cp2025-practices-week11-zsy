@@ -47,7 +47,7 @@ def Helmholtz_coils(r_low, r_up, d):
     #    dist1 = np.sqrt(dist1_sq)
     #    dist1[dist1 < 1e-9] = 1e-9 # 避免除零
     # 学生代码开始
-    dist1 = (r_low * np.cos(Phi))**2 + (Y - r_low * np.sin(Phi))**2 + (Z - (-d/2))**2
+    dist1_sq = (r_low * np.cos(Phi))**2 + (Y - r_low * np.sin(Phi))**2 + (Z - (-d/2))**2
     dist1 = np.sqrt(dist1_sq)
     dist1[dist1 < 1e-9] = 1e-9 # 占位符
     # 学生代码结束
@@ -57,7 +57,7 @@ def Helmholtz_coils(r_low, r_up, d):
     #    dist2 = np.sqrt(dist2_sq)
     #    dist2[dist2 < 1e-9] = 1e-9
     # 学生代码开始
-    dist2 = (r_up * np.cos(Phi))**2 + (Y - r_up * np.sin(Phi))**2 + (Z - (d/2))**2
+    dist2_sq = (r_up * np.cos(Phi))**2 + (Y - r_up * np.sin(Phi))**2 + (Z - d/2)**2
     dist2 = np.sqrt(dist2_sq)
     dist2[dist2 < 1e-9] = 1e-9
     # 占位符
