@@ -62,15 +62,21 @@ def gauss_legendre_integral(length, z, n_points=100):
     """
     # TODO: 实现高斯-勒让德积分
     try:
-        xi, wi = np.polynomial.legendre.leggauss(n_points)
+        x, wx = np.polynomial.legendre.leggauss(n_points)
+        y, wy = np.polynomial.legendre.leggauss(n_points)
         
-        x = xi * (length / 2)
-        w = wi * (length / 2)
-
+        def transform(t):
+            return (t + 1) * length / 2 - length / 2
+        
         integral = 0.0
         for i in range(n_points):
+            xi = transform(x[i])
             for j in range(n_points):
-                integral += w[i] * w[j] * integrand(x[i], x[j], z)
+                yj = transform(y[j])
+                integral += wx[i] * wy[j] * integrand(xi, yj, z)
+    
+        scale = (length / 2) ** 2
+        integral *= scale
         
         return integral
     except Exception as e:
