@@ -9,6 +9,7 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy import integrate
 
 # 物理常数
 G = 6.67430e-11  # 万有引力常数 (单位: m^3 kg^-1 s^-2)
@@ -96,13 +97,17 @@ def calculate_force(length, mass, z, method='gauss'):
     
     if method == 'gauss':
         integral = gauss_legendre_integral(length, z)
+    elif method == 'scipy':
+        # 定义积分区间
+        def integrand_scipy(y, x, z):
+            return integrand(x, y, z)
+        
+        integral, _ = integrate.dblquad(integrand_scipy, -length/2, length/2,
+                                        lambda x: -length/2, lambda x: length/2,
+                                        args=(z,))
     else:
-
-        return 0
-    
-    if integral is None:
-        integral = 0
-    
+        raise ValueError("method must be 'gauss' or 'scipy'")
+        
     Fz = G * sigma * z * integral
     return Fz
 
