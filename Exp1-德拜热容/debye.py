@@ -12,7 +12,7 @@ theta_D = 428  # 德拜温度，单位：K
 def integrand(x):
     """被积函数：x^4 * e^x / (e^x - 1)^2
     
-    参数：
+    参数： 
     x : float 或 numpy.ndarray
         积分变量
     
