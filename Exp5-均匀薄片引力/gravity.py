@@ -94,10 +94,11 @@ def calculate_force(length, mass, z, method='gauss'):
     # TODO: 返回最终引力值
     sigma = calculate_sigma(length, mass)
     
-    if method != 'gauss':
-        raise ValueError("method must be 'gauss'")
-    
-    integral = gauss_legendre_integral(length, z)
+    if method == 'gauss':
+        integral = gauss_legendre_integral(length, z)
+    else:
+
+        return 0.0
     
     if integral is None:
         integral = 0.0
