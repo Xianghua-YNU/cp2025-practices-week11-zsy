@@ -20,7 +20,7 @@ def integrand(x):
     float 或 numpy.ndarray：被积函数的值
     """
     # 在这里实现被积函数
-    pass
+    return x**4 * np.exp(x) / (np.exp(x) - 1)**2
 
 def gauss_quadrature(f, a, b, n):
     """实现高斯-勒让德积分
@@ -37,7 +37,9 @@ def gauss_quadrature(f, a, b, n):
     float：积分结果
     """
     # 在这里实现高斯积分
-    pass
+    x, w = np.polynomial.legendre.leggauss(n)
+    t = 0.5*(x + 1)*(b - a) + a
+    return 0.5*(b - a)*np.sum(w * f(t))
 
 def cv(T):
     """计算给定温度T下的热容
@@ -50,12 +52,29 @@ def cv(T):
     float：热容值，单位：J/K
     """
     # 在这里实现热容计算
-    pass
+    if T == 0:
+        return 0.0
+    upper_limit = theta_D / T
+    result = gauss_quadrature(integrand, 0, upper_limit, n=50)
+    return 9 * V * rho * kB * (T / theta_D)**3 * result
 
 def plot_cv():
     """绘制热容随温度的变化曲线"""
     # 在这里实现绘图功能
-    pass
+    temperatures = np.linspace(5, 500, 200)
+    heat_capacities = [cv(T) for T in temperatures]
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(temperatures, heat_capacities, label='Debye Model')
+    plt.xlabel('Temperature (K)', fontsize=12)
+    plt.ylabel('Heat Capacity (J/K)', fontsize=12)
+    plt.title('Heat Capacity of Aluminum vs Temperature', fontsize=14)
+    plt.grid(True, linestyle='--', alpha=0.7)
+    plt.legend()
+    plt.tight_layout()
+    
+    plt.savefig('heat_capacity_curve.png')
+    plt.show()
 
 def test_cv():
     """测试热容计算函数"""
