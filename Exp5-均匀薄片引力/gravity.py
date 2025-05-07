@@ -9,7 +9,6 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy import integrate
 
 # 物理常数
 G = 6.67430e-11  # 万有引力常数 (单位: m^3 kg^-1 s^-2)
