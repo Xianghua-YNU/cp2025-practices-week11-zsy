@@ -101,13 +101,14 @@ def calculate_force(length, mass, z, method='gauss'):
     sigma = calculate_sigma(length, mass)
     
     if method != 'gauss':
-        raise NotImplementedError("Only 'gauss' method is implemented")
+        raise ValueError("method must be 'gauss'")
     
     integral = gauss_legendre_integral(length, z)
     
     if integral is None:
         integral = 0.0
     
+    # 计算引力
     Fz = G * sigma * z * integral
     return Fz
 
