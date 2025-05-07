@@ -60,7 +60,7 @@ def gauss_legendre_integral(length, z, n_points=100):
         3. 实现双重循环计算二重积分
     """
     # TODO: 实现高斯-勒让德积分
-     try:
+    try:
         xi, wi = np.polynomial.legendre.leggauss(n_points)
         
         x = xi * (length / 2)
