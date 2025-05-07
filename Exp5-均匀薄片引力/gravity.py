@@ -62,27 +62,21 @@ def gauss_legendre_integral(length, z, n_points=100):
     """
     # TODO: 实现高斯-勒让德积分
     try:
-        x, wx = np.polynomial.legendre.leggauss(n_points)
-        y, wy = np.polynomial.legendre.leggauss(n_points)
+        xi, wi = np.polynomial.legendre.leggauss(n_points)
         
-        def transform(t):
-            return (t + 1) * length / 2 - length / 2
-    
+        x = xi * (length / 2)
+        w = wi * (length / 2)
+
         integral = 0.0
         for i in range(n_points):
-            xi = transform(x[i])
             for j in range(n_points):
-                yj = transform(y[j])
-                integral += wx[i] * wy[j] * integrand(xi, yj, z)
-        
-        scale = (length / 2) ** 2
-        integral *= scale
+                integral += w[i] * w[j] * integrand(x[i], x[j], z)
         
         return integral
     except Exception as e:
         print(f"Error in gauss_legendre_integral: {e}")
         return 0.0
-
+        
 def calculate_force(length, mass, z, method='gauss'):
     """
     计算给定高度处的引力
@@ -101,15 +95,14 @@ def calculate_force(length, mass, z, method='gauss'):
     # TODO: 返回最终引力值
     sigma = calculate_sigma(length, mass)
     
-    if method == 'gauss':
-        integral = gauss_legendre_integral(length, z)
-    else:
-        return 0.0
+    if method != 'gauss':
+        raise ValueError("method must be 'gauss'")
+        
+    integral = gauss_legendre_integral(length, z)
     
-    if integral is None:
+   if integral is None:
         integral = 0.0
     
-    # 计算引力
     Fz = G * sigma * z * integral
     return Fz
 
