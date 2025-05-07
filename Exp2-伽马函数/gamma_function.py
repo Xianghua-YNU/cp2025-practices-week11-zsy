@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 # from scipy.integrate import quad
 # TODO: 导入可能需要的数学函数 (例如: from math import ...)
 # from math import factorial, sqrt, pi, exp, log
+from scipy.integrate import quad
+from math import factorial, sqrt, pi, exp, log
 
 # --- Task 1: 绘制被积函数 ---
 
@@ -33,13 +35,19 @@ def integrand_gamma(x, a):
 
     if x == 0:
         # TODO: 处理 x=0 的情况 (考虑 a>1, a=1, a<1)
-        pass # Placeholder
+        if a > 1:
+            return 0.0
+        elif a == 1:
+            return 1.0
+        else:  # a < 1
+            return np.inf     # Placeholder
     elif x > 0:
         # TODO: 计算 x > 0 的情况，建议使用 log/exp 技巧
         try:
             # log_f = ...
             # return exp(log_f)
-            pass # Placeholder
+            log_f = (a - 1) * log(x) - x
+            return exp(log_f)   # Placeholder
         except ValueError:
             return np.nan # 处理可能的计算错误
     else: # 理论上不会进入这里
@@ -76,6 +84,9 @@ def plot_integrands():
     plt.grid(True)
     plt.ylim(bottom=0)
     plt.xlim(left=0)
+
+    plt.savefig('integrand_plot.png') 
+    plt.show()
     # plt.show() # 在 main 函数末尾统一调用 plt.show()
 
 # --- Task 2 & 3: 解析推导 (在注释或报告中完成) ---
@@ -128,6 +139,9 @@ def transformed_integrand_gamma(z, a):
     # 处理 z 的边界
     if z < 0 or z > 1: return 0.0
     if z == 1: return 0.0 # 对应 x=inf
+    x = c * z / (1 - z)
+    dx_dz = c / (1 - z)**2
+    return integrand_gamma(x, a) * dx_dz
 
     # TODO: 计算 x = c*z / (1-z)
     # TODO: 计算 dxdz = c / (1-z)**2
@@ -170,11 +184,11 @@ def gamma_function(a):
         if a > 1.0:
             # TODO: 使用数值积分计算变换后的积分从 0 到 1
             # integral_value, error = quad(transformed_integrand_gamma, 0, 1, args=(a,))
-            pass # Placeholder
+            integral_value, error = quad(transformed_integrand_gamma, 0, 1, args=(a,)) # Placeholder
         else: # a <= 1
             # TODO: 使用数值积分计算原始积分从 0 到 inf
             # integral_value, error = quad(integrand_gamma, 0, np.inf, args=(a,))
-            pass # Placeholder
+            integral_value, error = quad(integrand_gamma, 0, np.inf, args=(a,))  # Placeholder
 
         # print(f"Integration error estimate for a={a}: {error}") # Optional: print error
         return integral_value
@@ -197,30 +211,36 @@ if __name__ == "__main__":
     print("\n--- Task 4: 测试 Gamma(1.5) ---")
     a_test = 1.5
     # TODO: 调用 gamma_function 计算 gamma_calc
-    gamma_calc = 0.0 # Placeholder
+    gamma_calc = gamma_function(a_test)  # Placeholder
     # TODO: 计算精确值 gamma_exact = 0.5 * sqrt(pi)
-    gamma_exact = 0.0 # Placeholder
+    gamma_exact = 0.5 * sqrt(pi)  # Placeholder
     print(f"计算值 Gamma({a_test}) = {gamma_calc:.8f}")
     print(f"精确值 sqrt(pi)/2 = {gamma_exact:.8f}")
     # TODO: 计算并打印相对误差
     # if gamma_exact != 0:
     #     relative_error = abs(gamma_calc - gamma_exact) / abs(gamma_exact)
     #     print(f"相对误差 = {relative_error:.4e}")
+    if gamma_exact != 0:
+        relative_error = abs(gamma_calc - gamma_exact) / abs(gamma_exact)
+        print(f"相对误差 = {relative_error:.4e}")
 
     # --- Task 5 ---
     print("\n--- Task 5: 测试整数 Gamma(a) = (a-1)! ---")
     for a_int in [3, 6, 10]:
         print(f"\n计算 Gamma({a_int}):")
         # TODO: 调用 gamma_function 计算 gamma_int_calc
-        gamma_int_calc = 0.0 # Placeholder
+        gamma_int_calc = gamma_function(a_int) # Placeholder
         # TODO: 计算精确值 exact_factorial = float(factorial(a_int - 1))
-        exact_factorial = 0.0 # Placeholder
+        exact_factorial = float(factorial(a_int - 1)) # Placeholder
         print(f"  计算值 = {gamma_int_calc:.8f}")
         print(f"  精确值 ({a_int-1}!) = {exact_factorial:.8f}")
         # TODO: 计算并打印相对误差
         # if exact_factorial != 0:
         #     relative_error_int = abs(gamma_int_calc - exact_factorial) / abs(exact_factorial)
         #     print(f"  相对误差 = {relative_error_int:.4e}")
+        if exact_factorial != 0:
+            relative_error_int = abs(gamma_int_calc - exact_factorial) / abs(exact_factorial)
+            print(f"相对误差 = {relative_error_int:.4e}")
 
     # --- 显示图像 ---
     # plt.show() # 取消注释以显示 Task 1 的图像
