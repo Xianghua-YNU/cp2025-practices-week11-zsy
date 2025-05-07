@@ -98,10 +98,10 @@ def calculate_force(length, mass, z, method='gauss'):
         integral = gauss_legendre_integral(length, z)
     else:
 
-        return 0.0
+        return 0
     
     if integral is None:
-        integral = 0.0
+        integral = 0
     
     Fz = G * sigma * z * integral
     return Fz
