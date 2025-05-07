@@ -78,8 +78,8 @@ def Helmholtz_coils(r_low, r_up, d):
     #    By_unscaled = np.trapezoid(dBy_integrand, x=phi_angles, axis=-1) # 或 dx=delta_phi
     #    Bz_unscaled = np.trapezoid(dBz_integrand, x=phi_angles, axis=-1) # 或 dx=delta_phi
     # 学生代码开始
-    By_unscaled = np.trapz(dBy_integrand, x=phi_angles, axis=-1) / (4 * np.pi) # 占位符
-    Bz_unscaled = np.trapz(dBz_integrand, x=phi_angles, axis=-1) / (4 * np.pi) # 占位符
+    By_unscaled = np.trapezoid(dBy_integrand, x=phi_angles, axis=-1) / (4 * np.pi)  # 占位符
+    Bz_unscaled = np.trapezoid(dBz_integrand, x=phi_angles, axis=-1) / (4 * np.pi) # 占位符
     # 学生代码结束
 
     # 7. 引入物理常数因子得到真实的磁场值 (单位 T)
