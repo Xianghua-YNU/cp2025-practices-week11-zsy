@@ -41,8 +41,8 @@ def calculate_potential_on_grid(y_coords, z_coords):
     z_s = 0.0
 
     R = np.sqrt((0 - x_s[:, np.newaxis, np.newaxis])**2 + 
-                (y_grid[np.newaxis, :, :] - y_s[:, np.newaxis, np.newaxis])**2 + 
-                (z_grid[np.newaxis, :, :] - z_s[:, np.newaxis, np.newaxis])**2)
+            (y_grid[np.newaxis, :, :] - y_s[:, np.newaxis, np.newaxis])**2 + 
+            (z_grid[np.newaxis, :, :] - z_s)**2)
     
     # 3. 处理 R 可能为零或非常小的情况，避免除零错误
     # R[R < 1e-10] = 1e-10
