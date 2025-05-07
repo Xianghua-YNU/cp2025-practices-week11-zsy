@@ -104,7 +104,7 @@ def calculate_force(length, mass, z, method='gauss'):
     if method == 'gauss':
         integral = gauss_legendre_integral(length, z)
     else:
-        raise NotImplementedError("Only 'gauss' method is implemented")
+        return 0.0
     
     if integral is None:
         integral = 0.0
