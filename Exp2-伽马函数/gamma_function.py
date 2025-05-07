@@ -13,7 +13,7 @@ from scipy.integrate import quad
 from math import factorial, sqrt, pi, exp, log
 
 # --- Task 1: 绘制被积函数 ---
-
+ 
 def integrand_gamma(x, a):
     """
     计算伽马函数的原始被积函数: f(x, a) = x^(a-1) * exp(-x)
