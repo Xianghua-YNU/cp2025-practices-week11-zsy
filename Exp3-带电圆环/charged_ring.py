@@ -11,7 +11,7 @@ q = 1.0
 C = 1.0 / (2 * np.pi)
 
 # --- 计算函数 ---
-
+ 
 def calculate_potential_on_grid(y_coords, z_coords):
     """
     在 yz 平面 (x=0) 的网格上计算电势 V(0, y, z)。
