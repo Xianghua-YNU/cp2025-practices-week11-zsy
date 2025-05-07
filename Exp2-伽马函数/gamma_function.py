@@ -126,31 +126,25 @@ def transformed_integrand_gamma(z, a):
     # 首先处理 c = a-1
     c = a - 1.0
     if c <= 0:
+        return 0.0
         # 如何处理 a <= 1? 直接返回 0 可能导致积分结果错误。
         # 也许在 gamma_function 中根据 a 的值选择不同的积分方法更好？
         # 暂时返回 0，但需要注意这可能不适用于所有情况。
         # 或者，如果 gamma_function 保证只在 a>1 时调用此函数，则这里可以假设 c>0。
         # return 0.0 # 临时处理
         # 假设调用者保证 a > 1
-        if a <= 1: # 增加一个检查
-             print(f"警告: transformed_integrand_gamma 假定 a > 1，但接收到 a={a}")
-             return np.nan # 或者抛出错误
-
-    # 处理 z 的边界
-    if z < 0 or z > 1: return 0.0
-    if z == 1: return 0.0 # 对应 x=inf
+    if z < 0 or z > 1:
+        return 0.0
+    if z == 1:
+        return 0.0  # 对应 x=inf
     x = c * z / (1 - z)
     dx_dz = c / (1 - z)**2
     return integrand_gamma(x, a) * dx_dz
 
     # TODO: 计算 x = c*z / (1-z)
     # TODO: 计算 dxdz = c / (1-z)**2
-    x = 0 # Placeholder
-    dxdz = 0 # Placeholder
-
     # TODO: 计算 f(x, a) * dx/dz，调用 integrand_gamma(x, a)
-    val_f = 0 # Placeholder
-    result = val_f * dxdz
+
 
     # 检查结果是否有效
     if not np.isfinite(result):
