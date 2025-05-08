@@ -5,12 +5,13 @@ import matplotlib.pyplot as plt
 # --- 常量定义 ---
 a = 1.0  # 圆环半径 (单位: m)
 # q = 1.0  # 可以定义 q 参数，或者直接在 C 中体现
+q = 1.0 
 # V(x,y,z) = q/(2*pi) * integral(...)
 # C 对应 q/(2*pi)，这里设 q=1
 C = 1.0 / (2 * np.pi)
 
 # --- 计算函数 ---
-
+ 
 def calculate_potential_on_grid(y_coords, z_coords):
     """
     在 yz 平面 (x=0) 的网格上计算电势 V(0, y, z)。
@@ -29,26 +30,38 @@ def calculate_potential_on_grid(y_coords, z_coords):
     # 1. 创建 y, z, phi 网格 (使用 np.mgrid 或 np.meshgrid)
     #    注意维度顺序和 phi 的积分点数
     # z_grid, y_grid, phi_grid = ...
-
+    y_grid, z_grid = np.meshgrid(y_coords, z_coords, indexing='ij')
+    phi = np.linspace(0, 2 * np.pi, 100)
     # 2. 计算场点到圆环上各点的距离 R
     #    圆环方程: x_s = a*cos(phi), y_s = a*sin(phi), z_s = 0
     #    场点: (0, y_grid, z_grid)
     # R = ...
+    x_s = a * np.cos(phi)
+    y_s = a * np.sin(phi)
+    z_s = 0.0
 
+    R = np.sqrt((0 - x_s[:, np.newaxis, np.newaxis])**2 + 
+            (y_grid[np.newaxis, :, :] - y_s[:, np.newaxis, np.newaxis])**2 + 
+            (z_grid[np.newaxis, :, :] - z_s)**2)
+    
     # 3. 处理 R 可能为零或非常小的情况，避免除零错误
     # R[R < 1e-10] = 1e-10
-
+    
+    R[R < 1e-10] = 1e-10
+    
     # 4. 计算电势微元 dV = C / R
     # dV = ...
-
+    
     # 5. 对 phi 进行积分 (例如使用 np.trapz)
     #    注意指定积分轴和积分步长 dx (如果 trapz 需要)
     # V = np.trapz(...)
-
+    dV = C / R
+    V = np.trapz(dV, phi, axis=0)
+    
     print("电势计算完成.")
     # 6. 返回计算得到的电势 V 和对应的 y_grid, z_grid (取一个切片)
     # return V, y_grid[:,:,0], z_grid[:,:,0]
-    pass # 学生在此处实现代码
+    return V, y_grid, z_grid # 学生在此处实现代码
 
 def calculate_electric_field_on_grid(V, y_coords, z_coords):
     """
@@ -68,7 +81,10 @@ def calculate_electric_field_on_grid(V, y_coords, z_coords):
     # 1. 计算 y 和 z 方向的网格间距 dy, dz
     # dz = ...
     # dy = ...
-
+    
+    dy = y_coords[1] - y_coords[0]
+    dz = z_coords[1] - z_coords[0]
+    
     # 2. 使用 np.gradient 计算电势的负梯度
     #    注意 V 的维度顺序和 gradient 返回值的顺序
     #    E = -∇V
@@ -76,10 +92,14 @@ def calculate_electric_field_on_grid(V, y_coords, z_coords):
     # Ez = grad_z
     # Ey = grad_y
 
+    grad_z, grad_y = np.gradient(-V, dz, dy)
+    Ey = grad_y
+    Ez = grad_z
+    
     print("电场计算完成.")
     # 3. 返回电场的 y 和 z 分量
     # return Ey, Ez
-    pass # 学生在此处实现代码
+    return Ey, Ez # 学生在此处实现代码
 
 # --- 可视化函数 ---
 
@@ -98,6 +118,15 @@ def plot_potential_and_field(y_coords, z_coords, V, Ey, Ez, y_grid, z_grid):
 
     # 1. 绘制等势线图 (左侧子图)
     plt.subplot(1, 2, 1)
+    contourf_plot = plt.contourf(y_grid, z_grid, V, levels=20, cmap='viridis')
+    plt.colorbar(contourf_plot)
+    plt.contour(y_grid, z_grid, V, colors='black', levels=10, linewidths=0.5)
+    plt.xlabel('y / a')
+    plt.ylabel('z / a')
+    plt.title('Electric Potential')
+    plt.gca().set_aspect('equal', adjustable='box')
+    plt.grid(True)
+    
     #    - 使用 plt.contourf 绘制填充等势线图，设置 levels 和 cmap
     # contourf_plot = plt.contourf(...)
     #    - 添加颜色条 plt.colorbar()
@@ -109,9 +138,21 @@ def plot_potential_and_field(y_coords, z_coords, V, Ey, Ez, y_grid, z_grid):
     # ...
     #    - 设置坐标轴比例一致 plt.gca().set_aspect('equal', adjustable='box')
     #    - 添加网格 plt.grid()
+    
 
     # 2. 绘制电场线图 (右侧子图)
     plt.subplot(1, 2, 2)
+    E_magnitude = np.sqrt(Ey**2 + Ez**2)
+    stream_plot = plt.streamplot(y_grid, z_grid, Ey/E_magnitude, Ez/E_magnitude,
+                                 color=E_magnitude, cmap='autumn', linewidth=1, density=1,
+                                 arrowstyle='-|>', arrowsize=1.5)
+    plt.colorbar(stream_plot.lines)
+    plt.xlabel('y / a')
+    plt.ylabel('z / a')
+    plt.title('Electric Field')
+    plt.gca().set_aspect('equal', adjustable='box')
+    plt.grid(True)
+    
     #    - (可选) 计算电场强度 E_magnitude 用于着色
     # E_magnitude = ...
     #    - 使用 plt.streamplot 绘制电场线，传入 y_grid, z_grid, Ey, Ez
@@ -125,11 +166,15 @@ def plot_potential_and_field(y_coords, z_coords, V, Ey, Ez, y_grid, z_grid):
     #    - (可选) 标记圆环截面位置 plt.plot([-1, 1], [0, 0], 'ro', ...)
     #    - 添加图例 plt.legend()
 
+    plt.plot([1, -1], [0, 0], 'ro', markersize=8, label='Charged Ring')
+    plt.legend()
+    
     # 调整布局并显示图形
     plt.tight_layout()
+    plt.savefig('charged_ring.png', dpi=300)
     plt.show()
     print("绘图完成.")
-    pass # 学生在此处实现代码
+     # 学生在此处实现代码
 
 # --- 主程序 ---
 if __name__ == "__main__":
@@ -144,12 +189,12 @@ if __name__ == "__main__":
     # 1. 计算电势
     # 调用 calculate_potential_on_grid 函数获取 V, y_grid, z_grid
     # V, y_grid, z_grid = calculate_potential_on_grid(y_range, z_range)
-    V, y_grid, z_grid = None, None, None # 占位符，学生需要取消注释并调用函数
+    V, y_grid, z_grid = calculate_potential_on_grid(y_range, z_range) # 占位符，学生需要取消注释并调用函数
 
     # 2. 计算电场
     # 调用 calculate_electric_field_on_grid 函数获取 Ey, Ez
     # Ey, Ez = calculate_electric_field_on_grid(V, y_range, z_range)
-    Ey, Ez = None, None # 占位符
+    Ey, Ez = calculate_electric_field_on_grid(V, y_range, z_range) # 占位符
 
     # 3. 可视化
     # 确保 V, Ey, Ez, y_grid, z_grid 都有有效值后再绘图
